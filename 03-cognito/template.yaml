@@ -33,4 +33,4 @@ Resources:
             UserPoolClientId: !Ref CognitoUserPoolClient
             UserPoolDomain: !Sub "${CognitoUserPool}.auth.${AWS::Region}.amazoncognito.com"
         - Type: forward
-          TargetGroupArn: !ImportValue GitLabTG # デフォルトのターゲットグループ
+          TargetGroupArn: !ImportValue GitLabTGArn # デフォルトのターゲットグループ
