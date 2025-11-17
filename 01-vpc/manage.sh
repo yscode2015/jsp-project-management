@@ -33,3 +33,9 @@ delete() {
 
   echo "✅ ${STACK_NAME} を削除しました"
 }
+
+if [ ${MODE} = build ]; then
+  build
+elif [ ${MODE} = delete ]; then
+  delete
+fi
