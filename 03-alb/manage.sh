@@ -31,16 +31,16 @@ build() {
 
   echo "✅ Subnet ID1は ${subnet_id1} です"
 
-  echo "⏳ Subnet ID2を取得します"
-
-  local readonly subnet_id2=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpc_id}" "Name=map-public-ip-on-launch,Values=true" --query 'Subnets[?SubnetId!=${subnet_id1}].SubnetId' --output text`
-
-  if [ ${?} -ne 0 ]; then
-    echo "❌ Subnet ID2の取得に失敗しました"
-    exit 1
-  fi
-
-  echo "✅ Subnet ID1は ${subnet_id1} です"
+#  echo "⏳ Subnet ID2を取得します"
+#
+#  local readonly subnet_id2=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpc_id}" "Name=map-public-ip-on-launch,Values=true" --query 'Subnets[?SubnetId!=${subnet_id1}].SubnetId' --output text`
+#
+#  if [ ${?} -ne 0 ]; then
+#    echo "❌ Subnet ID2の取得に失敗しました"
+#    exit 1
+#  fi
+#
+#  echo "✅ Subnet ID2は ${subnet_id2} です"
 
   echo "⏳ ${STACK_NAME} を作成します"
 
@@ -49,7 +49,8 @@ build() {
     --stack-name ${STACK_NAME} \
     --capabilities CAPABILITY_NAMED_IAM \
     --parameter-overrides ExistingInstanceId=${EC2_INSTANCE_ID_} \
-      AwsRegion=ap-northeast-1
+      ExistingVpcId=${vpc_id} \
+      ExistingSubnetId1=${subnet_id1}
 
   if [ $? -ne 0 ]; then
     echo "❌ ${STACK_NAME} を作成できませんでした"
