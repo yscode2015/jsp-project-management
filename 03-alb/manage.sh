@@ -50,7 +50,7 @@ build() {
     --capabilities CAPABILITY_NAMED_IAM \
     --parameter-overrides ExistingInstanceId=${EC2_INSTANCE_ID_} \
       ExistingVpcId=${vpc_id} \
-      ExistingSubnetId1=${subnet_id1}
+      PublicSubnetId1=${subnet_id1}
 
   if [ $? -ne 0 ]; then
     echo "❌ ${STACK_NAME} を作成できませんでした"
