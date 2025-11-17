@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Cognito authentication for ALB
+
+Resources:
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: alb-userpool
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: alb-client
+      UserPoolId: !Ref CognitoUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+
+  CognitoAuth:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !ImportValue ALBListenerArn # alb.yaml から出力されている前提
+      Priority: 5
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - "/*"
+      Actions:
+        - Type: authenticate-cognito
+          AuthenticateCognitoConfig:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+            UserPoolClientId: !Ref CognitoUserPoolClient
+            UserPoolDomain: !Sub "${CognitoUserPool}.auth.${AWS::Region}.amazoncognito.com"
+        - Type: forward
+          TargetGroupArn: !Ref GitLabTG # デフォルトのターゲットグループ

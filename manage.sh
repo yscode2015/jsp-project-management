@@ -12,14 +12,14 @@ build() {
 #  fi
 
   DOMAIN_PREFIX_=${DOMAIN_PREFIX} \
-    bash ${ROOT}/02-cognito/manage.sh build
+    bash ${ROOT}/02-alb/manage.sh build
 
   if [ ${?} -ne 0 ]; then
     exit 1
   fi
 
   EC2_INSTANCE_ID_=${EC2_INSTANCE_ID} \
-    bash ${ROOT}/03-alb/manage.sh build
+    bash ${ROOT}/03-cognito/manage.sh build
 
   if [ ${?} -ne 0 ]; then
     exit 1
@@ -27,12 +27,12 @@ build() {
 }
 
 delete() {
-  bash ${ROOT}/03-alb/manage.sh delete
+  bash ${ROOT}/03-cognito/manage.sh delete
 
   if [ ${?} -ne 0 ]; then
     exit 1
   fi
-  bash ${ROOT}/02-cognito/manage.sh delete
+  bash ${ROOT}/02-alb/manage.sh delete
 
   if [ ${?} -ne 0 ]; then
     exit 1
