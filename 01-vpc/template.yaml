@@ -1,79 +1,83 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: VPC + Subnet + Internet + SG
+AWSTemplateFormatVersion: 2010-09-09
+Description: VPC stack with 2 Public Subnets exported for ALB
 
 Resources:
-  VPC:
+
+  Vpc:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.10.0.0/16
+      CidrBlock: 10.0.0.0/16
       EnableDnsSupport: true
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: demo-vpc
+          Value: app-vpc
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
 
-  IGWAttachment:
+  AttachIgw:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref Vpc
       InternetGatewayId: !Ref InternetGateway
 
-  PublicSubnet:
+  # Public Subnet 1
+  PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.1.0/24
       MapPublicIpOnLaunch: true
-      CidrBlock: 10.10.1.0/24
-      AvailabilityZone: !Select [0, !GetAZs '']
+      AvailabilityZone: !Select [0, !GetAZs ""]
 
-  RouteTable:
+  # Public Subnet 2
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select [1, !GetAZs ""]
+
+  PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref Vpc
 
-  Route:
+  PublicRoute:
     Type: AWS::EC2::Route
+    DependsOn: AttachIgw
     Properties:
-      RouteTableId: !Ref RouteTable
+      RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
-  SubnetRouteTableAssociation:
+  AssocSubnet1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet
-      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
 
-  EC2SecurityGroup:
-    Type: AWS::EC2::SecurityGroup
+  AssocSubnet2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      GroupDescription: Allow ALB access
-      VpcId: !Ref VPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 4000
-          ToPort: 4000
-          CidrIp: 0.0.0.0/0
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
 
 Outputs:
-  VPCId:
-    Value: !Ref VPC
-    Export:
-      Name: VPCId
 
-  PublicSubnetId:
-    Value: !Ref PublicSubnet
+  VpcId:
+    Value: !Ref Vpc
     Export:
-      Name: PublicSubnetId
+      Name: VpcIdExport
 
-  EC2SGId:
-    Value: !Ref EC2SecurityGroup
+  PublicSubnet1Id:
+    Value: !Ref PublicSubnet1
     Export:
-      Name: EC2SGId
+      Name: PublicSubnet1Export
+
+  PublicSubnet2Id:
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: PublicSubnet2Export
