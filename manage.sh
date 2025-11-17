@@ -11,15 +11,14 @@ build() {
 #    exit 1
 #  fi
 
-  DOMAIN_PREFIX_=${DOMAIN_PREFIX} \
+  EC2_INSTANCE_ID_=${EC2_INSTANCE_ID} \
     bash ${ROOT}/02-alb/manage.sh build
 
   if [ ${?} -ne 0 ]; then
     exit 1
   fi
 
-  EC2_INSTANCE_ID_=${EC2_INSTANCE_ID} \
-    bash ${ROOT}/03-cognito/manage.sh build
+  bash ${ROOT}/03-cognito/manage.sh build
 
   if [ ${?} -ne 0 ]; then
     exit 1

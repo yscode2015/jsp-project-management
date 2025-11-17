@@ -4,18 +4,12 @@ readonly MODE=${1:-build}
 readonly STACK_NAME=jsp-project-management-cognito
 
 build() {
-  if [ -z "${DOMAIN_PREFIX_}" ]; then
-    echo "❌ 環境変数 DOMAIN_PREFIX_ を定義してください"
-    exit 1
-  fi
-
   echo "⏳ ${STACK_NAME} を作成します"
 
   aws cloudformation deploy \
     --template-file ${ROOT}/template.yaml \
     --stack-name ${STACK_NAME} \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides DomainPrefix=${DOMAIN_PREFIX_}
+    --capabilities CAPABILITY_NAMED_IAM
 
   if [ $? -ne 0 ]; then
     echo "❌ ${STACK_NAME} を作成できませんでした"

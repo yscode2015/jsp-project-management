@@ -48,8 +48,8 @@ build() {
     --template-file ${ROOT}/template.yaml \
     --stack-name ${STACK_NAME} \
     --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides ExistingInstanceId=${EC2_INSTANCE_ID_} \
-      ExistingVpcId=${vpc_id} \
+    --parameter-overrides EC2InstanceId=${EC2_INSTANCE_ID_} \
+      VpcId=${vpc_id} \
       PublicSubnet1=${subnet_id1} \
       PublicSubnet2=${subnet_id2} \
 

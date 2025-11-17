@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: ALB + Cognito Auth + Routing to Existing EC2 (VPC ID specified externally)
 
 Parameters:
-  Ec2InstanceId:
+  EC2InstanceId:
     Type: String
     Description: EC2 instance running docker-compose (GitLab/OpenProject)
     
