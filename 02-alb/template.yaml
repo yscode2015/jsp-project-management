@@ -89,3 +89,9 @@ Resources:
       Actions:
         - Type: forward
           TargetGroupArn: !Ref OpenProjectTG
+
+Outputs:
+  GitLabTGArn:
+    Value: !Ref GitLabTG
+    Export:
+      Name: GitLabTGArn
