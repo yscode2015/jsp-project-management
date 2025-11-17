@@ -9,6 +9,39 @@ build() {
     exit 1
   fi
 
+  echo "⏳ ${EC2_INSTANCE_ID_} の VPC IDを取得します"
+
+  local readonly vpc_id=`aws ec2 describe-instances --instance-ids ${EC2_INSTANCE_ID_} --query 'Reservations[0].Instances[0].VpcId' --output text`
+
+  if [ ${?} -ne 0 ]; then
+    echo "❌ VPC IDの取得に失敗しました"
+    exit 1
+  fi
+
+  echo "✅ VPC IDは ${vpc_id} です"
+
+  echo "⏳ Subnet ID1を取得します"
+
+  local readonly subnet_id1=`aws ec2 describe-instances --instance-ids i-0f8467cae54acacbe  --query 'Reservations[0].Instances[0].SubnetId' --output text`
+
+  if [ ${?} -ne 0 ]; then
+    echo "❌ Subnet ID1の取得に失敗しました"
+    exit 1
+  fi
+
+  echo "✅ Subnet ID1は ${subnet_id1} です"
+
+  echo "⏳ Subnet ID2を取得します"
+
+  local readonly subnet_id2=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpc_id}" "Name=map-public-ip-on-launch,Values=true" --query 'Subnets[?SubnetId!=${subnet_id1}].SubnetId' --output text`
+
+  if [ ${?} -ne 0 ]; then
+    echo "❌ Subnet ID2の取得に失敗しました"
+    exit 1
+  fi
+
+  echo "✅ Subnet ID1は ${subnet_id1} です"
+
   echo "⏳ ${STACK_NAME} を作成します"
 
   aws cloudformation deploy \
