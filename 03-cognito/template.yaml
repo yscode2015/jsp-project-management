@@ -38,7 +38,7 @@ Resources:
           AuthenticateCognitoConfig:
             UserPoolArn: !GetAtt CognitoUserPool.Arn
             UserPoolClientId: !Ref CognitoUserPoolClient
-            UserPoolDomain: !Ref CongitoUserPoolDomain
+            UserPoolDomain: !Ref CognitoUserPoolDomain
         - Type: forward
           Order: 2
           TargetGroupArn: !ImportValue GitLabTGArn # デフォルトのターゲットグループ
