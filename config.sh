@@ -1,1 +1,2 @@
-readonly AMI_ID=test_ami_id
+readonly INSTANCE_ID=test_instance_id
+readonly DOMAIN_PREFIX_=yscode-jsp-project-management

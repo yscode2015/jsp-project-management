@@ -1,11 +1,11 @@
 #!/bin/bash
 readonly ROOT=$(cd $(dirname ${BASH_SOURCE:-${0}}); pwd)
 readonly MODE=${1:-build}
-readonly STACK_NAME=jsp-project-management-ec2
+readonly STACK_NAME=jsp-project-management-cognito
 
 build() {
-  if [ -z "${AMI_ID_}" ]; then
-    echo "❌ 環境変数 AMI_ID_ を定義してください"
+  if [ -z "${DOMAIN_PREFIX_}" ]; then
+    echo "❌ 環境変数 DOMAIN_PREFIX_ を定義してください"
     exit 1
   fi
 
@@ -15,7 +15,7 @@ build() {
     --template-file ${ROOT}/template.yaml \
     --stack-name ${STACK_NAME} \
     --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides AmiId=${AMI_ID_}
+    --parameter-overrides DomainPrefix=${DOMAIN_PREFIX_}
 
   if [ $? -ne 0 ]; then
     echo "❌ ${STACK_NAME} を作成できませんでした"

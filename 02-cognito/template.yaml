@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Cognito UserPool + Client + Hosted UI Domain
+
+Parameters:
+  DomainPrefix:
+    Type: String
+    Description: Domain prefix for Hosted UI (example → example.auth.ap-northeast-1.amazoncognito.com)
+
+Resources:
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: app-userpool
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Mutable: true
+          Required: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: app-client
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      CallbackURLs:
+        - http://localhost
+      LogoutURLs:
+        - http://localhost
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref DomainPrefix
+      UserPoolId: !Ref UserPool
+
+Outputs:
+
+  UserPoolArn:
+    Value: !GetAtt UserPool.Arn
+    Export:
+      Name: CognitoUserPoolArnExport
+
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+    Export:
+      Name: CognitoClientIdExport
+
+  DomainPrefix:
+    Value: !Ref DomainPrefix
+    Export:
+      Name: CognitoDomainPrefixExport
