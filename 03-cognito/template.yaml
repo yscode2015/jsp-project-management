@@ -20,8 +20,17 @@ Resources:
       ClientName: alb-client
       UserPoolId: !Ref CognitoUserPool
       GenerateSecret: false
-      ExplicitAuthFlows:
-        - ADMIN_NO_SRP_AUTH
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      CallbackURLs:
+        - http://dummy.example.com/oauth2/idpresponse
+      LogoutURLs:
+        - http://dummy.example.com/logout
 
   CognitoAuth:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
