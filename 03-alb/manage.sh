@@ -22,7 +22,7 @@ build() {
 
   echo "⏳ Subnet ID1を取得します"
 
-  local readonly subnet_id1=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpc_id}" --query "Subnets[0].SubnetId"--output text`
+  local readonly subnet_id1=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpc_id}" --query "Subnets[0].SubnetId" --output text`
 
   if [ ${?} -ne 0 ]; then
     echo "❌ Subnet ID1の取得に失敗しました"
@@ -33,7 +33,7 @@ build() {
 
   echo "⏳ Subnet ID2を取得します"
 
-  local readonly subnet_id1=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpc_id}" --query "Subnets[1].SubnetId"--output text`
+  local readonly subnet_id1=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpc_id}" --query "Subnets[1].SubnetId" --output text`
 
   if [ ${?} -ne 0 ]; then
     echo "❌ Subnet ID2の取得に失敗しました"
