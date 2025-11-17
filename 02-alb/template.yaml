@@ -95,3 +95,7 @@ Outputs:
     Value: !Ref GitLabTG
     Export:
       Name: GitLabTGArn
+  ALBListenerArn:
+    Value: !Ref ALBListener
+    Export:
+      Name: ALBListenerArn
