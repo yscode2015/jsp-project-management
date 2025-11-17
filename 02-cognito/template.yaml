@@ -20,7 +20,7 @@ Resources:
     Properties:
       ClientName: !Sub "${AWS::StackName}-UserPoolClient"
       UserPoolId: !Ref UserPool
-      GenerateSecret: false
+      GenerateSecret: true
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthFlows:
         - code
