@@ -8,6 +8,12 @@ Resources:
     Properties:
       UserPoolName: alb-userpool
 
+  CognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: yscode2015-jsp-project-management   # 一意ならOK
+      UserPoolId: !Ref CognitoUserPool
+
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -28,9 +34,11 @@ Resources:
             - "/*"
       Actions:
         - Type: authenticate-cognito
+          Order: 1
           AuthenticateCognitoConfig:
             UserPoolArn: !GetAtt CognitoUserPool.Arn
             UserPoolClientId: !Ref CognitoUserPoolClient
-            UserPoolDomain: !Sub "${CognitoUserPool}.auth.${AWS::Region}.amazoncognito.com"
+            UserPoolDomain: !Ref CongitoUserPoolDomain
         - Type: forward
+          Order: 2
           TargetGroupArn: !ImportValue GitLabTGArn # デフォルトのターゲットグループ
