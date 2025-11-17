@@ -68,7 +68,10 @@ Resources:
           AuthenticateCognitoConfig:
             UserPoolArn: !ImportValue CognitoUserPoolArnExport
             UserPoolClientId: !ImportValue CognitoClientIdExport
-            UserPoolDomain: !Sub "${CognitoDomainPrefixExport}.auth.${AwsRegion}.amazoncognito.com"
+            UserPoolDomain: !Sub
+              - "${DomainPrefix}.auth.${AwsRegion}.amazoncognito.com"
+              - DomainPrefix: !ImportValue CognitoDomainPrefixExport
+                AwsRegion: !Ref "AWS::Region"
         - Type: forward
           Order: 2
           TargetGroupArn: !Ref GitlabTargetGroup
@@ -102,4 +105,7 @@ Outputs:
     Value: !GetAtt Alb.DNSName
   
   CognitoLogin:
-    Value: !Sub "https://${CognitoDomainPrefixExport}.auth.${AwsRegion}.amazoncognito.com/login"
+    Value: !Sub
+      - "https://${DomainPrefix}.auth.${AwsRegion}.amazoncognito.com/login"
+      - DomainPrefix: !ImportValue CognitoDomainPrefixExport
+        AwsRegion: !Ref "AWS::Region"
