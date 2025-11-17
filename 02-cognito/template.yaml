@@ -7,29 +7,20 @@ Parameters:
     Description: Domain prefix for Hosted UI (example → example.auth.ap-northeast-1.amazoncognito.com)
 
 Resources:
-
+Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: app-userpool
+      UserPoolName: !Sub "${AWS::StackName}-UserPool"
       AutoVerifiedAttributes:
         - email
-      Schema:
-        - AttributeDataType: String
-          Name: email
-          Mutable: true
-          Required: true
 
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      ClientName: app-client
+      ClientName: !Sub "${AWS::StackName}-UserPoolClient"
       UserPoolId: !Ref UserPool
       GenerateSecret: false
-      CallbackURLs:
-        - http://localhost
-      LogoutURLs:
-        - http://localhost
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthFlows:
         - code
@@ -37,6 +28,10 @@ Resources:
         - email
         - openid
         - profile
+      CallbackURLs:
+        - !Join ['', ['https://', !Ref DomainPrefix, '.auth.', !Ref AWS::Region, '.amazoncognito.com/oauth2/idpresponse']]
+      LogoutURLs:
+        - !Join ['', ['https://', !Ref DomainPrefix, '.auth.', !Ref AWS::Region, '.amazoncognito.com/logout']]
 
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
